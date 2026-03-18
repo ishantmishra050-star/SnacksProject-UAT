@@ -45,6 +45,7 @@ export default function Register() {
                     <div className="form-group">
                         <label>Password</label>
                         <input type="password" value={form.password} onChange={e => update('password', e.target.value)} placeholder="Create password" required />
+                        <small style={{ color: '#888', fontSize: '12px', marginTop: '4px', display: 'block' }}>Min 8 chars with uppercase, lowercase &amp; number</small>
                     </div>
                     <div className="form-row">
                         <div className="form-group">
