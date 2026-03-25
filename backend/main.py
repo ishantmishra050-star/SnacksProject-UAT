@@ -8,6 +8,21 @@ from .api import auth, stores, products, orders, users
 # Create all tables
 Base.metadata.create_all(bind=engine)
 
+# Auto-seed the database if it is empty (useful for Render free tier SQLite)
+from .database import SessionLocal
+from .models.store import Store
+import subprocess
+
+db = SessionLocal()
+try:
+    if db.query(Store).count() == 0:
+        print("Database is empty. Running seed_db.py to populate UAT data...")
+        subprocess.run(["python", "backend/seed_db.py"], check=True)
+except Exception as e:
+    print(f"Auto-seeding failed: {e}")
+finally:
+    db.close()
+
 # ─── Environment config ───
 ENV = os.getenv("APP_ENV", "development")
 IS_PROD = ENV == "production"
