@@ -1,11 +1,12 @@
 import time
 import html
 from collections import defaultdict
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models.user import User
 from ..schemas.schemas import UserRegister, UserLogin, Token, UserOut, ForgotPasswordRequest, ResetPasswordRequest
+from ..utils.email import send_password_reset_email
 from ..utils.security import (
     hash_password, verify_password, create_access_token,
     decode_token, oauth2_scheme, validate_password_strength,
@@ -98,17 +99,15 @@ def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 @router.post("/forgot-password")
-def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
+def forgot_password(data: ForgotPasswordRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email.lower().strip()).first()
     if user:
         token = create_reset_token(user.email, user.password_hash)
-        print("\n" + "="*50)
-        print("MOCK EMAIL SENT:")
-        print(f"To: {user.email}")
-        print(f"Subject: Password Reset Request")
-        print(f"Link: https://snacks-project.vercel.app/reset-password?token={token}")
-        # Note: We print this out so that during UAT testing the user can click the link from the logs
-        print("="*50 + "\n")
+        reset_link = f"https://snacks-project.vercel.app/reset-password?token={token}"
+        
+        # Schedule the email sending as a background task
+        background_tasks.add_task(send_password_reset_email, user.email, reset_link)
+        
     return {"message": "If that email is registered, a password reset link has been sent."}
 
 @router.post("/reset-password")
