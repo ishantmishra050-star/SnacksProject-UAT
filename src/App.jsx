@@ -9,6 +9,8 @@ import StoreDirectory from './pages/StoreDirectory';
 import StorePage from './pages/StorePage';
 import Cart from './pages/Cart';
 import OrderHistory from './pages/OrderHistory';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import './index.css';
 
 /* ─── Navbar ─── */
@@ -211,6 +213,8 @@ function AppShell() {
                     <Route path="/stores/:id" element={<StorePage />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/orders" element={<OrderHistory />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                 </Routes>
             </div>
             <footer className="footer">

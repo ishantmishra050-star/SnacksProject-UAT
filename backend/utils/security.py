@@ -67,3 +67,28 @@ def decode_token(token: str) -> dict:
             detail="Invalid or expired token",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+def create_reset_token(email: str, password_hash: str) -> str:
+    """Creates a short-lived token for password reset encoding a segment of the current hash to prevent reuse."""
+    expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode = {
+        "sub": email,
+        "pwd": password_hash[-10:],
+        "exp": expire,
+        "iat": datetime.now(timezone.utc),
+        "type": "reset"
+    }
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+def verify_reset_token(token: str) -> dict:
+    """Verifies a reset token and returns the payload to check the password segment."""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "reset":
+            raise JWTError("Invalid token type")
+        return payload
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token"
+        )

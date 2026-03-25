@@ -5,10 +5,11 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models.user import User
-from ..schemas.schemas import UserRegister, UserLogin, Token, UserOut
+from ..schemas.schemas import UserRegister, UserLogin, Token, UserOut, ForgotPasswordRequest, ResetPasswordRequest
 from ..utils.security import (
     hash_password, verify_password, create_access_token,
     decode_token, oauth2_scheme, validate_password_strength,
+    create_reset_token, verify_reset_token,
 )
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
@@ -95,3 +96,33 @@ def login(data: UserLogin, request: Request, db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserOut)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.post("/forgot-password")
+def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == data.email.lower().strip()).first()
+    if user:
+        token = create_reset_token(user.email, user.password_hash)
+        print("\n" + "="*50)
+        print("MOCK EMAIL SENT:")
+        print(f"To: {user.email}")
+        print(f"Subject: Password Reset Request")
+        print(f"Link: https://snacks-project.vercel.app/reset-password?token={token}")
+        # Note: We print this out so that during UAT testing the user can click the link from the logs
+        print("="*50 + "\n")
+    return {"message": "If that email is registered, a password reset link has been sent."}
+
+@router.post("/reset-password")
+def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+    validate_password_strength(data.new_password)
+    payload = verify_reset_token(data.token)
+    email = payload.get("sub")
+    pwd_fragment = payload.get("pwd")
+    
+    user = db.query(User).filter(User.email == email).first()
+    # Ensure user exists and the token hasn't been used (password fragment matches)
+    if not user or pwd_fragment != user.password_hash[-10:]:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+        
+    user.password_hash = hash_password(data.new_password)
+    db.commit()
+    return {"message": "Password has been successfully reset."}
