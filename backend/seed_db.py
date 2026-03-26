@@ -19,21 +19,21 @@ db = SessionLocal()
 # --- Seed Products ---
 products_data = [
     # (name, regional_name, description, category, region, image_url, gst_rate)
-    ("Chorafali", "ચોરાફળી", "Crispy, spicy Diwali snack dusted with black salt masala", "Festive", "Gujarat", "https://upload.wikimedia.org/wikipedia/commons/c/c6/Khakhra_br%C3%B6d.png", 12.0), # Using khakhra as fallback
-    ("Bhakarwadi", "भाकरवडी", "Sweet and spicy pinwheel snack from Pune", "Savory", "Maharashtra", "https://upload.wikimedia.org/wikipedia/commons/9/9a/Chakli_in_a_bowl.jpg", 12.0), # Fallback to chakli style
-    ("Mathiya", "મઠીયા", "Traditional crispy Diwali flatbread with bubbly texture", "Festive", "Gujarat", "https://upload.wikimedia.org/wikipedia/commons/f/f2/Mathri.JPG", 12.0), # Fallback to Mathri
-    ("Poha Chiwda", "पोहा चिवડા", "Light savory mixture of flattened rice, nuts, and spices", "Tea-Time", "Maharashtra", "https://upload.wikimedia.org/wikipedia/commons/c/c6/Bombaymix.jpg", 12.0), # Fallback
-    ("Khakhra", "ખાખરા", "Thin roasted whole wheat cracker, perfect for travel", "Breakfast", "Gujarat", "https://upload.wikimedia.org/wikipedia/commons/c/c6/Khakhra_br%C3%B6d.png", 5.0),
-    ("Chakli", "चकली", "Spiral crunchy deep-fried snack made from rice flour", "Festive", "Maharashtra", "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Chakli_in_a_bowl.jpg/960px-Chakli_in_a_bowl.jpg", 12.0),
-    ("Shankarpali", "शंकरपाळे", "Diamond-shaped lightly sweet crispy cookies", "Sweet", "Maharashtra", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Shankarpali_sweets_mithai_Western_India_2012.jpg/960px-Shankarpali_sweets_mithai_Western_India_2012.jpg", 5.0),
-    ("Navratan Mix Namkeen", "नवरत्न मिक्स", "A signature premium blend of chickpeas, lentils, peanuts, and crispy noodles seasoned perfectly.", "Savory", "Maharashtra", "https://upload.wikimedia.org/wikipedia/commons/c/c6/Bombaymix.jpg", 12.0),
-    ("Sev Namkeen", "શેવ / સેવ", "Classic crispy gram flour noodles, essential for any namkeen mix.", "Savory", "Maharashtra", "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Shop_selling_Bikaneri_bhujia_in_Jaipur.jpg/960px-Shop_selling_Bikaneri_bhujia_in_Jaipur.jpg", 12.0),
-    ("Khasta Kachori", "खस्ता कचौरी", "Flaky, crispy deep-fried pastry filled with spicy moong dal mixture.", "Snack", "Gujarat", "https://upload.wikimedia.org/wikipedia/commons/8/8f/Rajasthani_Raj_Kachori.jpg", 12.0),
-    ("Farali Chiwda", "फराળી चिवડા", "Sweet and spicy potato and peanut mix, ideal for fasting days.", "Tea-Time", "Maharashtra", "https://upload.wikimedia.org/wikipedia/commons/c/c6/Bombaymix.jpg", 12.0),
-    ("Thekua", "ठेकुआ", "Crunchy deep-fried sweet biscuit made with wheat flour, jaggery, and coconut.", "Festive", "Bihar", "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Thekua_-_Chhath_Festival_-_Kolkata_2013-11-09_4316.JPG/960px-Thekua_-_Chhath_Festival_-_Kolkata_2013-11-09_4316.JPG", 20.0),
-    ("Pinni", "पिन्नी", "Nutrient-rich winter sweet made with wheat flour, desi ghee, jaggery, and nuts.", "Sweet", "Haryana", "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Pinni_cropped.JPG/960px-Pinni_cropped.JPG", 30.0),
-    ("Tilkut", "तिलकुટ", "A traditional Gaya winter sweet made with pounded sesame seeds and jaggery.", "Sweet", "Bihar", "https://upload.wikimedia.org/wikipedia/commons/a/aa/Tilkut_Sweet.jpg", 5.0),
-    ("Anarsa", "अनरसा", "A sweet pastry-like snack made from rice flour, jaggery, and coated with poppy seeds.", "Festive", "Bihar", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Anarsa.jpg/960px-Anarsa.jpg", 10.0),
+    ("Chorafali", "ચોરાફળી", "Crispy, spicy Diwali snack dusted with black salt masala", "Festive", "Gujarat", "/images/chorafali.png", 12.0),
+    ("Bhakarwadi", "भाकरवडी", "Sweet and spicy pinwheel snack from Pune", "Savory", "Maharashtra", "/images/bhakarwadi.png", 12.0),
+    ("Mathiya", "મઠીયા", "Traditional crispy Diwali flatbread with bubbly texture", "Festive", "Gujarat", "/images/mathiya.png", 12.0),
+    ("Poha Chiwda", "पोहा चिवડા", "Light savory mixture of flattened rice, nuts, and spices", "Tea-Time", "Maharashtra", "/images/poha_chiwda.png", 12.0),
+    ("Khakhra", "ખાખરા", "Thin roasted whole wheat cracker, perfect for travel", "Breakfast", "Gujarat", "/images/khakhra.png", 5.0),
+    ("Chakli", "चकली", "Spiral crunchy deep-fried snack made from rice flour", "Festive", "Maharashtra", "/images/chakli.png", 12.0),
+    ("Shankarpali", "शंकरपाळे", "Diamond-shaped lightly sweet crispy cookies", "Sweet", "Maharashtra", "/images/shankarpali.png", 5.0),
+    ("Navratan Mix Namkeen", "नवरत्न मिक्स", "A signature premium blend of chickpeas, lentils, peanuts, and crispy noodles seasoned perfectly.", "Savory", "Maharashtra", "/images/navratan_mix.png", 12.0),
+    ("Sev Namkeen", "શેવ / સેવ", "Classic crispy gram flour noodles, essential for any namkeen mix.", "Savory", "Maharashtra", "/images/sev.png", 12.0),
+    ("Khasta Kachori", "खस्ता कचौरी", "Flaky, crispy deep-fried pastry filled with spicy moong dal mixture.", "Snack", "Gujarat", "/images/khasta_kachori.png", 12.0),
+    ("Farali Chiwda", "फराળી चिवડા", "Sweet and spicy potato and peanut mix, ideal for fasting days.", "Tea-Time", "Maharashtra", "/images/farali_chiwda.png", 12.0),
+    ("Thekua", "ठेकुआ", "Crunchy deep-fried sweet biscuit made with wheat flour, jaggery, and coconut.", "Festive", "Bihar", "/images/thekua.png", 20.0),
+    ("Pinni", "पिन्नी", "Nutrient-rich winter sweet made with wheat flour, desi ghee, jaggery, and nuts.", "Sweet", "Haryana", "/images/pinni.png", 30.0),
+    ("Tilkut", "तिलकुટ", "A traditional Gaya winter sweet made with pounded sesame seeds and jaggery.", "Sweet", "Bihar", "/images/tilkut.png", 5.0),
+    ("Anarsa", "अनरसा", "A sweet pastry-like snack made from rice flour, jaggery, and coated with poppy seeds.", "Festive", "Bihar", "/images/anarsa.png", 10.0),
 ]
 
 # Clear existing data to ensure only shippable ones remain and images are updated

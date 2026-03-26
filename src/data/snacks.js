@@ -104,7 +104,7 @@ export const snacksData = [
         preparation_time: "30 mins",
         difficulty: "Expert",
         shelfLife: "1-2 days (fresh)",
-        image: "/images/chorafali.png",
+        image: "/images/khandvi.png",
         funFact: "A perfectly made Khandvi should be so thin that you can almost see through it when held up to the light."
     },
     {
@@ -122,7 +122,7 @@ export const snacksData = [
         preparation_time: "1 hour",
         difficulty: "Medium",
         shelfLife: "3-4 weeks",
-        image: "/images/bhakarwadi.png",
+        image: "/images/chakli.png",
         funFact: "The world's largest Murukku, measuring 12 feet in diameter, was made in Tamil Nadu in 2019!"
     },
     {
@@ -140,7 +140,7 @@ export const snacksData = [
         preparation_time: "45 mins",
         difficulty: "Easy",
         shelfLife: "2-3 weeks",
-        image: "/images/mathiya.png",
+        image: "/images/shankarpali.png",
         funFact: "Some families add a pinch of poppy seeds (khus-khus) to the dough for a subtle, dreamy flavor and slight crunch."
     }
 ];
