@@ -213,35 +213,33 @@ function OrdersTab() {
     );
 }
 
-function UsersTab() {
+function UsersTable({ role, title, icon }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        api.get('/api/admin/users').then(r => setUsers(r.data)).finally(() => setLoading(false));
-    }, []);
+        api.get(`/api/admin/users?role=${role}`).then(r => setUsers(r.data)).finally(() => setLoading(false));
+    }, [role]);
 
     const filtered = users.filter(u =>
         u.name.toLowerCase().includes(search.toLowerCase()) ||
         u.email.toLowerCase().includes(search.toLowerCase())
     );
 
-    if (loading) return <div className="loading-state">Loading users...</div>;
-
-    const ROLE_COLORS = { customer: '#3b82f6', store_owner: '#f59e0b', admin: '#ef4444' };
+    if (loading) return <div className="loading-state">Loading {title.toLowerCase()}...</div>;
 
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <SectionTitle>👥 All Users ({users.length})</SectionTitle>
-                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search by name or email..." style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid #e5e7eb', fontSize: '14px', width: '280px', outline: 'none' }} />
+                <SectionTitle>{icon} {title} ({users.length})</SectionTitle>
+                <input value={search} onChange={e => setSearch(e.target.value)} placeholder={`🔍 Search ${title.toLowerCase()}...`} style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid #e5e7eb', fontSize: '14px', width: '280px', outline: 'none' }} />
             </div>
             <div style={{ overflowX: 'auto', background: '#fff', borderRadius: '16px', boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                     <thead>
                         <tr style={{ background: '#f9fafb', color: '#6b7280' }}>
-                            {['ID', 'Name', 'Email', 'Phone', 'Country', 'Role', 'Orders', 'Total Spend', 'Joined'].map(h => (
+                            {['ID', 'Name', 'Email', 'Phone', 'Country', 'Orders', 'Total Spend', 'Joined'].map(h => (
                                 <th key={h} style={{ padding: '12px 14px', textAlign: 'left', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>{h}</th>
                             ))}
                         </tr>
@@ -254,11 +252,6 @@ function UsersTab() {
                                 <td style={{ padding: '12px 14px', color: '#6b7280', fontSize: '13px' }}>{u.email}</td>
                                 <td style={{ padding: '12px 14px', color: '#6b7280', fontSize: '13px' }}>{u.phone || '—'}</td>
                                 <td style={{ padding: '12px 14px', color: '#6b7280' }}>{u.country}</td>
-                                <td style={{ padding: '12px 14px' }}>
-                                    <span style={{ padding: '3px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: '600', background: (ROLE_COLORS[u.role] || '#9ca3af') + '18', color: ROLE_COLORS[u.role] || '#9ca3af' }}>
-                                        {u.role}
-                                    </span>
-                                </td>
                                 <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: '700', color: '#374151' }}>{u.order_count}</td>
                                 <td style={{ padding: '12px 14px', fontWeight: '700', color: '#10b981' }}>₹{u.total_spend.toLocaleString('en-IN')}</td>
                                 <td style={{ padding: '12px 14px', color: '#9ca3af', fontSize: '12px', whiteSpace: 'nowrap' }}>{new Date(u.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
@@ -266,10 +259,18 @@ function UsersTab() {
                         ))}
                     </tbody>
                 </table>
-                {filtered.length === 0 && <p style={{ padding: '24px', textAlign: 'center', color: '#9ca3af' }}>No users found.</p>}
+                {filtered.length === 0 && <p style={{ padding: '24px', textAlign: 'center', color: '#9ca3af' }}>No {title.toLowerCase()} found.</p>}
             </div>
         </div>
     );
+}
+
+function CustomersTab() {
+    return <UsersTable role="customer" title="Customers" icon="🛍️" />;
+}
+
+function PartnersTab() {
+    return <UsersTable role="store_owner" title="Partners" icon="🏪" />;
 }
 
 function ProductsTab() {
@@ -319,7 +320,8 @@ function ProductsTab() {
 const TABS = [
     { id: 'dashboard', label: '📊 Dashboard' },
     { id: 'orders', label: '📦 Orders' },
-    { id: 'users', label: '👥 Users' },
+    { id: 'customers', label: '🛍️ Customers' },
+    { id: 'partners', label: '🏪 Partners' },
     { id: 'products', label: '📈 Products' },
 ];
 
@@ -374,7 +376,8 @@ export default function Admin() {
             <div style={{ padding: '32px 40px', maxWidth: '1400px', margin: '0 auto' }}>
                 {activeTab === 'dashboard' && <DashboardTab data={dashData} />}
                 {activeTab === 'orders' && <OrdersTab />}
-                {activeTab === 'users' && <UsersTab />}
+                {activeTab === 'customers' && <CustomersTab />}
+                {activeTab === 'partners' && <PartnersTab />}
                 {activeTab === 'products' && <ProductsTab />}
             </div>
         </div>

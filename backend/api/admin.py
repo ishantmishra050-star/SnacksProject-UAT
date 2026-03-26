@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, desc
-from typing import List
+from typing import List, Optional
 from ..database import get_db
 from ..models.order import Order, OrderItem, OrderStatus, PaymentStatus
 from ..models.product import StoreProduct, Product
-from ..models.user import User
+from ..models.user import User, UserRole
 from ..models.store import Store
 from .auth import get_current_user
 
@@ -149,11 +149,18 @@ def update_order_status(
 
 @router.get("/users")
 def get_all_users(
+    role: Optional[str] = Query(None, description="Filter by role: customer, store_owner, admin"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     _require_admin(current_user)
-    users = db.query(User).order_by(User.created_at.desc()).all()
+    query = db.query(User)
+    if role:
+        try:
+            query = query.filter(User.role == UserRole(role))
+        except ValueError:
+            pass
+    users = query.order_by(User.created_at.desc()).all()
     result = []
     for u in users:
         order_count = db.query(func.count(Order.id)).filter(Order.user_id == u.id).scalar() or 0
