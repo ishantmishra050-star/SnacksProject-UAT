@@ -86,10 +86,20 @@ def login(data: UserLogin, request: Request, db: Session = Depends(get_db)):
     # Rate limiting
     _check_rate_limit(request)
 
-    user = db.query(User).filter(User.email == data.email.lower().strip()).first()
+    identifier = data.identifier.strip()
+    
+    # Determine if identifier is email or phone
+    import re
+    is_email = '@' in identifier
+    if is_email:
+        user = db.query(User).filter(User.email == identifier.lower()).first()
+    else:
+        # Normalize phone: strip spaces, dashes, parentheses
+        phone_clean = re.sub(r'[\s\-\(\)]+', '', identifier)
+        user = db.query(User).filter(User.phone == phone_clean).first()
+
     if not user or not verify_password(data.password, user.password_hash):
-        # Generic error to prevent user enumeration
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, detail="Invalid email/phone or password")
     token = create_access_token(data={"sub": str(user.id), "role": user.role.value})
     return {"access_token": token}
 

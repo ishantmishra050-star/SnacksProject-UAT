@@ -1,6 +1,7 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional, List
 from datetime import datetime
+import re
 
 
 # ─── Auth ───
@@ -11,8 +12,29 @@ class UserRegister(BaseModel):
     phone: Optional[str] = None
     country: str = "India"
 
+    @field_validator('phone')
+    @classmethod
+    def validate_phone(cls, v):
+        if v is None or v.strip() == '':
+            return None
+        # Strip spaces and dashes for normalization
+        cleaned = re.sub(r'[\s\-\(\)]+', '', v)
+        # Accept Indian (10 digit) or international (+country_code + digits, 7-15 digits)
+        if re.fullmatch(r'\d{10}', cleaned):  # Indian local
+            return cleaned
+        if re.fullmatch(r'\+\d{7,15}', cleaned):  # International e.g. +919876543210
+            return cleaned
+        raise ValueError('Phone must be a valid 10-digit number or international format (e.g. +919876543210)')
+
+    @field_validator('name')
+    @classmethod
+    def validate_name(cls, v):
+        if not v or not v.strip():
+            raise ValueError('Name cannot be empty')
+        return v.strip()
+
 class UserLogin(BaseModel):
-    email: EmailStr
+    identifier: str  # email OR phone number
     password: str
 
 class ForgotPasswordRequest(BaseModel):

@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ export default function Login() {
         setError('');
         setLoading(true);
         try {
-            await login(email, password);
+            await login(identifier, password);
             navigate('/stores');
         } catch (err) {
             setError(err.response?.data?.detail || 'Login failed');
@@ -34,8 +34,14 @@ export default function Login() {
                 {error && <div className="auth-error">{error}</div>}
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
-                        <label>Email</label>
-                        <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required />
+                        <label>Email or Phone Number</label>
+                        <input
+                            type="text"
+                            value={identifier}
+                            onChange={e => setIdentifier(e.target.value)}
+                            placeholder="you@example.com or 9876543210"
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Password</label>
